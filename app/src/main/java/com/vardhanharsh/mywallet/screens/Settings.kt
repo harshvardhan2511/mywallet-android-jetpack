@@ -16,8 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.navOptions
 import com.vardhanharsh.mywallet.components.TableRow
 import com.vardhanharsh.mywallet.ui.theme.BackgroundElevated
+import com.vardhanharsh.mywallet.ui.theme.DividerColor
 import com.vardhanharsh.mywallet.ui.theme.Shapes
 import com.vardhanharsh.mywallet.ui.theme.topAppBarBackground
 
@@ -44,11 +47,15 @@ fun Settings(navController: NavController){
                 Column(modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .clip(shape = Shapes.medium)
+                    .clip(shape = Shapes.large)
                     .background(BackgroundElevated)
                 ) {
-                    TableRow(text = "Categories", hasArrow = true)
-                    Divider(modifier = Modifier.height(2.dp))
+                    TableRow(text = "Categories", hasArrow = true, onClick = { _ ->
+                        run {
+                            navController.navigate("settings/categories")
+                        }
+                    })
+                    Divider(thickness = 1.dp, color = DividerColor)
                     TableRow(text = "Erase all data", isDestructive = true)
                 }
             }
