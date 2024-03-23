@@ -1,12 +1,12 @@
 package com.vardhanharsh.mywallet.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -16,8 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
-import androidx.navigation.navOptions
 import com.vardhanharsh.mywallet.components.TableRow
 import com.vardhanharsh.mywallet.ui.theme.BackgroundElevated
 import com.vardhanharsh.mywallet.ui.theme.DividerColor
@@ -50,12 +48,10 @@ fun Settings(navController: NavController){
                     .clip(shape = Shapes.large)
                     .background(BackgroundElevated)
                 ) {
-                    TableRow(text = "Categories", hasArrow = true, onClick = { _ ->
-                        run {
+                    TableRow(text = "Categories", hasArrow = true, modifier = Modifier.clickable {
                             navController.navigate("settings/categories")
-                        }
                     })
-                    Divider(thickness = 1.dp, color = DividerColor)
+                    HorizontalDivider(thickness = 1.dp, color = DividerColor)
                     TableRow(text = "Erase all data", isDestructive = true)
                 }
             }

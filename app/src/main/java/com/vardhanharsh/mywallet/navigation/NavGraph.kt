@@ -24,7 +24,7 @@ fun Navigation(navController: NavHostController , innerPadding: PaddingValues ){
         }
         // Add
         composable("add"){
-            Add(navController , innerPadding)
+            Add(navController)
         }
         // Settings
         composable("settings"){

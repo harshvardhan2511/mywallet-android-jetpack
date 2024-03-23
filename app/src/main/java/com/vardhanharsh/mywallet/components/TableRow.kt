@@ -1,8 +1,8 @@
 package com.vardhanharsh.mywallet.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -17,28 +17,27 @@ import com.vardhanharsh.mywallet.ui.theme.Typography
 import com.vardhanharsh.mywallet.ui.theme.textPrimary
 
 @Composable
-fun TableRow(text: String, onClick: (String) -> Unit = {}, hasArrow: Boolean = false, isDestructive: Boolean = false){
+fun TableRow(text: String, modifier: Modifier = Modifier, hasArrow: Boolean = false, isDestructive: Boolean = false, content: (@Composable RowScope.() ->Unit)? = null ){
 
     val textColor = if(isDestructive) Destructive else textPrimary
 
-
-
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .clickable {
-                onClick(text)
-            }
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(start = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ){
-        Text(text = "$text", style = Typography.bodyMedium, color = textColor)
+        Text(text = text, style = Typography.bodyMedium, color = textColor, modifier = Modifier.padding( vertical = 16.dp))
 
         if(hasArrow) {
             Icon(painterResource(id = R.drawable.right_arrow),
                 contentDescription = "Right Arrow",
-                modifier = Modifier.padding(end = 4.dp)
+                modifier = Modifier.padding(vertical = 16.dp)
                 )
+        }
+
+        if(content != null){
+            content()
         }
 
 
