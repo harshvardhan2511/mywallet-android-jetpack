@@ -86,6 +86,7 @@ fun UnstyledTextField(
                     isError = isError,
                     label = label,
                     placeholder = {
+                        // Aligns the placeholder to the right.
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = arrangement,

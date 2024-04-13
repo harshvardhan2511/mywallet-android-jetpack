@@ -1,10 +1,9 @@
 package com.vardhanharsh.mywallet.screens
 
-import android.app.DatePickerDialog
+
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.icu.text.SimpleDateFormat
-import android.widget.DatePicker
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,26 +47,31 @@ import com.vardhanharsh.mywallet.ui.theme.topAppBarBackground
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.marosseleng.compose.material3.datetimepickers.date.ui.dialog.DatePickerDialog
+import com.vardhanharsh.mywallet.models.Recurrence
 import com.vardhanharsh.mywallet.ui.theme.Primary
-import java.util.Calendar
-import java.util.Date
+import com.vardhanharsh.mywallet.ui.theme.Typography
+import com.vardhanharsh.mywallet.viewmodels.AddViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+// one opt in is for Scaffold and another is for date-picker
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun Add(navController: NavController) {
-    val recurrences = listOf<String>(
-        "None",
-        "Daily",
-        "Weekly",
-        "Monthly",
-        "Yearly"
+fun Add(navController: NavController, vm: AddViewModel = viewModel()) {
+// vm = viewModel
+    val state by vm.uiState.collectAsState()
+
+    val recurrences = listOf(
+        Recurrence.None,
+        Recurrence.Daily,
+        Recurrence.Weekly,
+        Recurrence.Monthly,
+        Recurrence.Yearly
     )
 
-    var selectedRecurrence by remember {
-        mutableStateOf(recurrences[0])
-    }
 
     val categories = listOf<String>(
         "Groceries",
@@ -75,38 +81,8 @@ fun Add(navController: NavController) {
         "Clothes"
     )
 
-    var selectedCategory by remember{
-        mutableStateOf(categories[0])
-    }
 
-    // CODE FOR DATE PICKER STARTS
 
-    val mYear: Int
-    val mMonth: Int
-    val mDay: Int
-
-    val mCalendar = Calendar.getInstance()
-
-    mYear = mCalendar.get(Calendar.YEAR)
-    mMonth = mCalendar.get(Calendar.MONTH)
-    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
-
-    mCalendar.time = Date()
-    val mContext = LocalContext.current
-
-    val sdf = SimpleDateFormat("dd-MM-yyyy")
-    val currentDate = sdf.format(Date())
-    val date = remember {  mutableStateOf(currentDate)  }
-
-    // DatePickerDialog is from "Android.app" class
-    val datePickerDialog = DatePickerDialog(
-        mContext,
-        {_: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            date.value = "$dayOfMonth/${month + 1}/$year"
-        }, mYear, mMonth, mDay
-    )
-
-    // CODE FOR DATE PICKER ENDS
 
     Scaffold(
 
@@ -133,16 +109,23 @@ fun Add(navController: NavController) {
                         .clip(shape = Shapes.large)
                         .background(BackgroundElevated)
                 ) {
+
                     TableRow(text = "Amount") {
                         UnstyledTextField(
-                            value = "$0.00",
-                            onValueChange = {},
-                            placeholder = { Text(text = "Yo type here") },
+                            value = state.amount,
+                            // :: provides reference to that function
+                            onValueChange = vm::setAmount,
+                            placeholder = { Text(text = "0") },
+                            arrangement = Arrangement.End,
+                            maxLines = 1,
                             modifier = Modifier.fillMaxWidth(),
                             textStyle = TextStyle(
                                 textAlign = TextAlign.End,
                                 fontSize = 17.sp
 
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
                             )
                         )
                     }
@@ -156,13 +139,13 @@ fun Add(navController: NavController) {
 
                         TextButton(onClick = { menuOpened = true }) {
 
-                            Text(text = selectedRecurrence)
+                            Text(state.recurrence?.name ?: Recurrence.None.name)
                             DropdownMenu(expanded = menuOpened, onDismissRequest = { /*TODO*/ }) {
 
                                 recurrences.forEach { recurrence ->
-                                    DropdownMenuItem(text = { Text(text = recurrence) },
+                                    DropdownMenuItem(text = { Text(text = recurrence.name) },
                                         onClick = {
-                                            selectedRecurrence = recurrence
+                                            vm.setRecurrence(recurrence)
                                             menuOpened = false
                                         })
                                 }
@@ -173,17 +156,40 @@ fun Add(navController: NavController) {
                     }
 
                     HorizontalDivider(thickness = 1.dp, color = DividerColor)
+
+                    var datePickerShow by remember{
+                        mutableStateOf(false)
+                    }
                     TableRow(text = "Date"){
-                        TextButton(onClick = { datePickerDialog.show() }) {
-                            Text(text = date.value)
+                        TextButton(onClick = { datePickerShow = true }) {
+                            Text(state.date.toString())
                         }
+
+                        if(datePickerShow){
+                            // this date picker is from third party library. See gradle:app
+                            DatePickerDialog(
+                                onDismissRequest = { datePickerShow = false },
+                                onDateChange = {
+                                    vm.setDate(it)
+                                    datePickerShow = false
+                                },
+                                initialDate = state.date,
+                                title = {Text("Select Date", style = Typography.titleMedium)}
+
+                            )
+                        }
+
+
+
+
+
                     }
 
                     HorizontalDivider(thickness = 1.dp, color = DividerColor)
                     TableRow(text = "Note", content = {
                         UnstyledTextField(
-                            value = "",
-                            onValueChange = {},
+                            value = state.note,
+                            onValueChange = vm::setNote,
                             placeholder = {
                                 Text(
                                     text = "Yo type here",
@@ -206,8 +212,8 @@ fun Add(navController: NavController) {
                         }
 
                         TextButton(onClick = { CategoriesMenuOpened = true }) {
-
-                            Text(text = selectedCategory)
+                            // TODO: change the color of text based on selected category
+                            Text(text = state.category?: "Select a category first")
                             DropdownMenu(expanded = CategoriesMenuOpened, onDismissRequest = { /*TODO*/ }) {
 
                                 categories.forEach { category ->
@@ -223,10 +229,9 @@ fun Add(navController: NavController) {
                                                 Text(text = category)
                                             }
 
-
                                                },
                                         onClick = {
-                                            selectedCategory = category
+                                            vm.setCategory(category)
                                             CategoriesMenuOpened = false
                                         })
                                 }
@@ -239,7 +244,7 @@ fun Add(navController: NavController) {
 
 
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = vm::submitExpense,
                     modifier = Modifier.padding(16.dp),
                     shape = Shapes.large
                 ) {
@@ -253,6 +258,7 @@ fun Add(navController: NavController) {
     )
 
 }
+
 
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable

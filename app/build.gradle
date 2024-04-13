@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.vardhanharsh.mywallet"
-        minSdk 24
+        minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -70,5 +70,11 @@ dependencies {
     // Navigation dependency
     def nav_version = "2.5.3"
     implementation "androidx.navigation:navigation-compose:$nav_version"
+
+    // DatePicker Dialog
+    implementation("com.marosseleng.android:compose-material3-datetime-pickers:0.7.2")
+
+    // View Model
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
 }
