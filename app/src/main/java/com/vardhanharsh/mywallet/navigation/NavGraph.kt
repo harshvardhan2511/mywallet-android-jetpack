@@ -32,7 +32,7 @@ fun Navigation(navController: NavHostController , innerPadding: PaddingValues ){
         }
         // Settings -> Categories
         composable("settings/categories"){
-            Categories(navController,  innerPadding)
+            Categories(navController)
         }
     }
 }
