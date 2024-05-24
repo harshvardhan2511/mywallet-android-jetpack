@@ -3,18 +3,19 @@
 package com.vardhanharsh.mywallet.screens
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -39,7 +40,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -96,33 +96,75 @@ fun Categories(navController: NavController, vm: CategoriesViewModel = viewModel
 
         content = { innerPadding ->
 
-            Column(modifier = Modifier.padding(innerPadding)) {
-                // Order of modifier settings matter. Everything is build layer over layer.
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .clip(shape = Shapes.large)
-                        .background(BackgroundElevated)
-                ) {
-                    TableRow(text = "Groceries")
-                    HorizontalDivider(thickness = 1.dp, color = DividerColor)
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    AnimatedVisibility(visible = true) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .clip(Shapes.large)
+                                .background(BackgroundElevated)
+                                .fillMaxWidth()
+                        ) {
+                            itemsIndexed(
+                                uiState.categories,
+                                // key = { _, category -> category.name }
+                            )
+                            { index, category ->
 
-                    TableRow(text = "Bills")
-                    HorizontalDivider(thickness = 1.dp, color = DividerColor)
+                                TableRow {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.padding(horizontal = 16.dp)
+                                    ) {
+                                        Surface(
+                                            color = category.color,
+                                            shape = CircleShape,
+                                            border = BorderStroke(
+                                                width = 2.dp,
+                                                color = Color.White
+                                            ),
+                                            modifier = Modifier.size(16.dp)
+                                        ) {}
+                                        Text(
+                                            category.name,
+                                            modifier = Modifier.padding(
+                                                horizontal = 16.dp,
+                                                vertical = 10.dp
+                                            ),
+                                            style = Typography.bodyMedium,
+                                        )
+                                    }
+                                }
 
-                    TableRow(text = "Take out")
-                    HorizontalDivider(thickness = 1.dp, color = DividerColor)
-
-                    TableRow(text = "Subscriptions")
-                    HorizontalDivider(thickness = 1.dp, color = DividerColor)
-
+                                if (index < uiState.categories.size - 1) {
+                                    Row(
+                                        modifier = Modifier
+                                            .background(BackgroundElevated)
+                                            .height(1.dp)
+                                    ) {
+                                        HorizontalDivider(
+                                            modifier = Modifier.padding(start = 16.dp),
+                                            thickness = 1.dp,
+                                            color = DividerColor
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
+
 
                 Row(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .padding(bottom = 16.dp)
+                        .padding(bottom = 75.dp)
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -201,6 +243,7 @@ fun Categories(navController: NavController, vm: CategoriesViewModel = viewModel
                         modifier = Modifier.size(width = 24.dp, height = 24.dp)
                     ) {}
 
+                    // TODO: Center Category
                     Surface(
                         color = BackgroundElevated,
                         modifier = Modifier
@@ -211,18 +254,22 @@ fun Categories(navController: NavController, vm: CategoriesViewModel = viewModel
                     ) {
 
                         Column(
-                            modifier = Modifier.fillMaxHeight(1.0f),
-                            verticalArrangement = Arrangement.Center
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxHeight(1.0f)
+
                         ) {
                             UnstyledTextField(
                                 value = uiState.newCategoryName,
                                 onValueChange = vm::setNewCategoryName,
-                                placeholder = { Text(
-                                    "Category name"
-                                ) },
+                                placeholder = {
+                                    Text(
+                                        "Category name"
+                                    )
+                                },
                                 arrangement = Arrangement.Start,
                                 modifier = Modifier
-                                    .fillMaxWidth().fillMaxHeight(),
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(),
                                 maxLines = 1,
                             )
                         }
