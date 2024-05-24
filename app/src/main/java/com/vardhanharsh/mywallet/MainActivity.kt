@@ -31,12 +31,12 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         setContent {
             MyWalletTheme {
                 // A surface container using the 'background' color from the theme
 
-                var showBottomBar by rememberSaveable { mutableStateOf(true) }
+                val showBottomBar by rememberSaveable { mutableStateOf(true) }
                 val navController = rememberNavController()
                 // holds details like the destination's arguments, lifecycle state, and other relevant information associated with that particular destination
                 val backStackEntry = navController.currentBackStackEntryAsState()
