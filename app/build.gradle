@@ -79,4 +79,7 @@ dependencies {
     // Color - picker
     implementation("com.github.skydoves:colorpicker-compose:1.0.8")
 
+    // SwipeAbleActionBox on categories page
+    implementation "me.saket.swipe:swipe:1.0.0"
+
 }

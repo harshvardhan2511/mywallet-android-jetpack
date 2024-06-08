@@ -1,5 +1,6 @@
 package com.vardhanharsh.mywallet.viewmodels
 
+
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.vardhanharsh.mywallet.models.Category
@@ -80,6 +81,7 @@ class CategoriesViewModel:ViewModel(){
 //        }
 
 
+
         val newCategoriesList = mutableListOf(
             Category(
                 _uiState.value.newCategoryName,
@@ -101,6 +103,33 @@ class CategoriesViewModel:ViewModel(){
     }
 
 
+    fun deleteCategory(category: Category) {
+        // TODO: Delete Category from Local DB
+
+//        viewModelScope.launch(Dispatchers.IO) {
+//            db.write {
+//                val deletingCategory = this.query<Category>("_id == $0", category._id).find().first()
+//                delete(deletingCategory)
+//            }
+//        }
+
+        val index = _uiState.value.categories.indexOf(category)
+
+        val newCategoriesList = mutableListOf<Category>()
+
+        newCategoriesList.addAll(
+            _uiState.value.categories,
+        )
+
+        newCategoriesList.removeAt(index)
+
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                categories = newCategoriesList
+            )
+        }
+    }
 
 
 }

@@ -2,9 +2,12 @@
 
 package com.vardhanharsh.mywallet.screens
 
+import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,6 +41,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -48,17 +53,21 @@ import com.github.skydoves.colorpicker.compose.AlphaTile
 import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
+import com.vardhanharsh.mywallet.R
 import com.vardhanharsh.mywallet.components.TableRow
 import com.vardhanharsh.mywallet.components.UnstyledTextField
 import com.vardhanharsh.mywallet.ui.theme.BackgroundElevated
+import com.vardhanharsh.mywallet.ui.theme.Destructive
 import com.vardhanharsh.mywallet.ui.theme.DividerColor
 import com.vardhanharsh.mywallet.ui.theme.MyWalletTheme
 import com.vardhanharsh.mywallet.ui.theme.Shapes
 import com.vardhanharsh.mywallet.ui.theme.Typography
 import com.vardhanharsh.mywallet.ui.theme.topAppBarBackground
 import com.vardhanharsh.mywallet.viewmodels.CategoriesViewModel
+import me.saket.swipe.SwipeAction
+import me.saket.swipe.SwipeableActionsBox
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun Categories(navController: NavController, vm: CategoriesViewModel = viewModel()) {
 
@@ -66,6 +75,7 @@ fun Categories(navController: NavController, vm: CategoriesViewModel = viewModel
 
     val colorPickerController = rememberColorPickerController()
 
+    val mContext = LocalContext.current
 
     Scaffold(
 
@@ -102,45 +112,68 @@ fun Categories(navController: NavController, vm: CategoriesViewModel = viewModel
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
+
                 Column(modifier = Modifier.weight(1f)) {
                     AnimatedVisibility(visible = true) {
                         LazyColumn(
                             modifier = Modifier
                                 .padding(16.dp)
                                 .clip(Shapes.large)
-                                .background(BackgroundElevated)
+                                //.background(BackgroundElevated)
                                 .fillMaxWidth()
                         ) {
                             itemsIndexed(
                                 uiState.categories,
-                                // key = { _, category -> category.name }
+                                key = { _, category -> category.name }
                             )
                             { index, category ->
 
-                                TableRow {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.padding(horizontal = 16.dp)
-                                    ) {
-                                        Surface(
-                                            color = category.color,
-                                            shape = CircleShape,
-                                            border = BorderStroke(
-                                                width = 2.dp,
-                                                color = Color.White
-                                            ),
-                                            modifier = Modifier.size(16.dp)
-                                        ) {}
-                                        Text(
-                                            category.name,
-                                            modifier = Modifier.padding(
-                                                horizontal = 16.dp,
-                                                vertical = 10.dp
-                                            ),
-                                            style = Typography.bodyMedium,
-                                        )
+                                SwipeableActionsBox(
+                                    endActions = listOf(
+                                        SwipeAction(
+                                            icon = {
+                                                Icon(
+                                                    painterResource(R.drawable.delete),
+                                                    contentDescription = "Delete",
+                                                    modifier = Modifier.size(25.dp)
+                                                )
+                                            },
+                                            background = Destructive,
+                                            onSwipe = { vm.deleteCategory(category) }
+                                        ),
+                                    ),
+                                    modifier = Modifier.animateItemPlacement(),
+                                    swipeThreshold = 120.dp
+                                ) {
+
+                                    TableRow {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier.padding(horizontal = 16.dp)
+                                        ) {
+                                            Surface(
+                                                color = category.color,
+                                                shape = CircleShape,
+                                                border = BorderStroke(
+                                                    width = 2.dp,
+                                                    color = Color.White
+                                                ),
+                                                modifier = Modifier.size(16.dp)
+                                            ) {}
+                                            Text(
+                                                category.name,
+                                                modifier = Modifier.padding(
+                                                    horizontal = 16.dp,
+                                                    vertical = 10.dp
+                                                ),
+                                                style = Typography.bodyMedium,
+                                            )
+                                        }
                                     }
+
                                 }
+
+
 
                                 if (index < uiState.categories.size - 1) {
                                     Row(
@@ -164,7 +197,7 @@ fun Categories(navController: NavController, vm: CategoriesViewModel = viewModel
                 Row(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .padding(bottom = 75.dp)
+                        .padding(bottom = 18.dp)
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -254,10 +287,11 @@ fun Categories(navController: NavController, vm: CategoriesViewModel = viewModel
                     ) {
 
                         Column(
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxHeight(1.0f)
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.SpaceBetween,
 
-                        ) {
+
+                            ) {
                             UnstyledTextField(
                                 value = uiState.newCategoryName,
                                 onValueChange = vm::setNewCategoryName,
@@ -275,7 +309,11 @@ fun Categories(navController: NavController, vm: CategoriesViewModel = viewModel
                         }
                     }
                     IconButton(
-                        onClick = vm::createNewCategory,
+                        onClick = {
+                            if (uiState.newCategoryName.isEmpty()) {
+                                mToast(mContext)
+                            } else vm.createNewCategory()
+                        },
                         modifier = Modifier
                             .padding(start = 16.dp)
                     ) {
@@ -291,6 +329,9 @@ fun Categories(navController: NavController, vm: CategoriesViewModel = viewModel
     )
 }
 
+private fun mToast(context: Context) {
+    Toast.makeText(context, "Please enter a category name", Toast.LENGTH_SHORT).show()
+}
 
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable

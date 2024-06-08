@@ -36,12 +36,16 @@ class MainActivity : ComponentActivity() {
             MyWalletTheme {
                 // A surface container using the 'background' color from the theme
 
-                val showBottomBar by rememberSaveable { mutableStateOf(true) }
+                var showBottomBar by rememberSaveable { mutableStateOf(true) }
                 val navController = rememberNavController()
                 // holds details like the destination's arguments, lifecycle state, and other relevant information associated with that particular destination
-                val backStackEntry = navController.currentBackStackEntryAsState()
+                val backStackEntry by navController.currentBackStackEntryAsState()
 
-
+                // Determines whether the bottom bar should be shown or not based on the current destination
+                showBottomBar = when (backStackEntry?.destination?.route) {
+                    "settings/categories" -> false
+                    else -> true
+                }
 
                 Scaffold(
 
@@ -63,7 +67,7 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 // Expenses Icon
                                 NavigationBarItem(
-                                    selected = backStackEntry.value?.destination?.route == "expenses",
+                                    selected = backStackEntry?.destination?.route == "expenses",
                                     onClick = { navController.navigate("expenses") },
                                     label = {
                                         Text(text = "Expenses")
@@ -77,7 +81,7 @@ class MainActivity : ComponentActivity() {
 
                                 )
                                 NavigationBarItem(
-                                    selected = backStackEntry.value?.destination?.route == "report",
+                                    selected = backStackEntry?.destination?.route == "report",
                                     onClick = { navController.navigate("report") },
                                     label = {
                                         Text(text = "Report")
@@ -91,7 +95,7 @@ class MainActivity : ComponentActivity() {
 
                                 )
                                 NavigationBarItem(
-                                    selected = backStackEntry.value?.destination?.route == "add",
+                                    selected = backStackEntry?.destination?.route == "add",
                                     onClick = { navController.navigate("add") },
                                     label = {
                                         Text(text = "Add")
@@ -105,7 +109,7 @@ class MainActivity : ComponentActivity() {
 
                                 )
                                 NavigationBarItem(
-                                    selected = backStackEntry.value?.destination?.route?.startsWith(
+                                    selected = backStackEntry?.destination?.route?.startsWith(
                                         "settings"
                                     ) ?: false,
                                     onClick = { navController.navigate("settings") },
