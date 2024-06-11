@@ -12,15 +12,15 @@ import com.vardhanharsh.mywallet.screens.Report
 import com.vardhanharsh.mywallet.screens.Settings
 
 @Composable
-fun Navigation(navController: NavHostController , innerPadding: PaddingValues ){
-//    val navController = rememberNavController()
+fun Navigation(navController: NavHostController  ){
+
     NavHost(navController = navController, startDestination = "expenses"){
         composable("expenses"){
             Expenses(navController)
         }
         // Report
         composable("report"){
-            Report(navController, innerPadding)
+            Report()
         }
         // Add
         composable("add"){

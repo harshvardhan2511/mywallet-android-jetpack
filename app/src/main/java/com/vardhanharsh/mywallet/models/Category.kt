@@ -1,9 +1,12 @@
 package com.vardhanharsh.mywallet.models
 
-data class Category(
+import androidx.compose.ui.graphics.Color
+
+data class Category (
     val name: String,
-    val color: androidx.compose.ui.graphics.Color
+    val color: Color
 )
+
 
 //class Category() : RealmObject {
 //    @PrimaryKey
@@ -11,7 +14,7 @@ data class Category(
 //
 //    private var _colorValue: String = "0,0,0"
 //    var name: String = ""
-//    val color: Color
+//    val color: androidx.compose.ui.graphics.Color
 //        get() {
 //            val colorComponents = _colorValue.split(",")
 //            val (red, green, blue) = colorComponents
@@ -20,7 +23,7 @@ data class Category(
 //
 //    constructor(
 //        name: String,
-//        color: Color
+//        color: androidx.compose.ui.graphics.Color
 //    ) : this() {
 //        this.name = name
 //        this._colorValue = "${color.red},${color.green},${color.blue}"

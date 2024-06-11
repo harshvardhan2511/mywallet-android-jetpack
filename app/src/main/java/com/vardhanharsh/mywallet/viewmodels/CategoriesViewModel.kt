@@ -4,6 +4,7 @@ package com.vardhanharsh.mywallet.viewmodels
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.vardhanharsh.mywallet.models.Category
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -105,7 +106,7 @@ class CategoriesViewModel:ViewModel(){
 
     fun deleteCategory(category: Category) {
         // TODO: Delete Category from Local DB
-
+//
 //        viewModelScope.launch(Dispatchers.IO) {
 //            db.write {
 //                val deletingCategory = this.query<Category>("_id == $0", category._id).find().first()

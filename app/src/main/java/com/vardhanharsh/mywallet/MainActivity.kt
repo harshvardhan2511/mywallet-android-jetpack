@@ -10,7 +10,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,13 +17,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.vardhanharsh.mywallet.navigation.Navigation
+import com.vardhanharsh.mywallet.screens.Expenses
 import com.vardhanharsh.mywallet.ui.theme.MyWalletTheme
-import com.vardhanharsh.mywallet.ui.theme.topAppBarBackground
 
 class MainActivity : ComponentActivity() {
 
@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                     bottomBar = {
                         if (showBottomBar) {
                             NavigationBar(
-                                containerColor = topAppBarBackground
+                                containerColor = Color.Black
                             ) {
                                 // Expenses Icon
                                 NavigationBarItem(
@@ -131,7 +131,7 @@ class MainActivity : ComponentActivity() {
                     },
                     content = { innerPadding ->
 
-                        Navigation(navController, innerPadding)
+                        Navigation(navController)
 
 
                     }
@@ -141,20 +141,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+
 
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun GreetingPreview() {
     MyWalletTheme {
-        Surface {
-            Greeting("Android")
+        MyWalletTheme {
+            Expenses(navController = rememberNavController())
         }
     }
 }
