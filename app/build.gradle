@@ -84,9 +84,12 @@ dependencies {
     // Realm-DB
     //implementation 'io.realm.kotlin:library-base:1.6.0'
 
-
+    // For charts on Reports screen
     implementation "com.github.tehras:charts:0.2.4-alpha"
-//    implementation "com.google.accompanist:accompanist-pager:0.29.1-alpha"
+    // a group of libraries that aim to supplement Jetpack Compose with features
+    // that are commonly required by developers but not yet available
+    // Pager: customize the look and behavior of pages
+   implementation "com.google.accompanist:accompanist-pager:0.29.1-alpha"
 //    implementation 'androidx.room:room-ktx:2.6.1'
 
 

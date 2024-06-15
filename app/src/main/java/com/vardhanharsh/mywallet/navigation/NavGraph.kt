@@ -5,14 +5,16 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.vardhanharsh.mywallet.screens.Add
 import com.vardhanharsh.mywallet.screens.Categories
 import com.vardhanharsh.mywallet.screens.Expenses
 import com.vardhanharsh.mywallet.screens.Report
 import com.vardhanharsh.mywallet.screens.Settings
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun Navigation(navController: NavHostController  ){
+fun Navigation(navController: NavHostController, it: PaddingValues){
 
     NavHost(navController = navController, startDestination = "expenses"){
         composable("expenses"){

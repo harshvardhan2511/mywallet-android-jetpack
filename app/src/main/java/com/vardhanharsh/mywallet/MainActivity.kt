@@ -129,11 +129,8 @@ class MainActivity : ComponentActivity() {
                         }
 
                     },
-                    content = { innerPadding ->
-
-                        Navigation(navController)
-
-
+                    content = {
+                        Navigation(navController, it)
                     }
                 )
             }

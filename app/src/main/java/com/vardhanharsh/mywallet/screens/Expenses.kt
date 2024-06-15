@@ -56,6 +56,7 @@ fun Expenses(
     )
 
     val state by vm.uiState.collectAsState()
+
     var recurrenceMenuOpened by remember {
         mutableStateOf(false)
     }
@@ -107,12 +108,14 @@ fun Expenses(
                 }
                 Row(modifier = Modifier.padding(vertical = 32.dp)) {
                     Text(
-                        "$",
+                        "₹",
                         style = Typography.bodyMedium,
                         color = LabelSecondary,
                         modifier = Modifier.padding(end = 4.dp, top = 4.dp)
                     )
                     Text(
+                        // 0 means atleast one digit should be there
+                        // # means at most one digit after decimal
                         DecimalFormat("0.#").format(state.sumTotal),
                         style = Typography.titleLarge
                     )

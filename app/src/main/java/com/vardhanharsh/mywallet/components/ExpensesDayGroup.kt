@@ -20,6 +20,7 @@ fun ExpensesDayGroup(
 ) {
     Column(modifier = modifier) {
         Text(
+            // Using dateUtil.kt
             date.formatDay(),
             style = Typography.headlineMedium,
             color = LabelSecondary
@@ -38,7 +39,7 @@ fun ExpensesDayGroup(
         ) {
             Text("Total:", style = Typography.bodyMedium, color = LabelSecondary)
             Text(
-                DecimalFormat("USD 0.#").format(dayExpenses.total),
+                DecimalFormat("INR 0.#").format(dayExpenses.total),
                 style = Typography.headlineMedium,
                 color = LabelSecondary
             )

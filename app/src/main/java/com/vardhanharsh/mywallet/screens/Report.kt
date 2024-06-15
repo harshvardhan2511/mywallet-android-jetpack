@@ -26,7 +26,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
 import com.vardhanharsh.mywallet.R
+import com.vardhanharsh.mywallet.components.ReportPage
 import com.vardhanharsh.mywallet.components.charts.MonthlyChart
 import com.vardhanharsh.mywallet.components.charts.WeeklyChart
 import com.vardhanharsh.mywallet.components.charts.YearlyChart
@@ -39,6 +42,7 @@ import com.vardhanharsh.mywallet.ui.theme.topAppBarBackground
 import com.vardhanharsh.mywallet.viewmodels.ReportsViewModel
 import java.time.LocalDate
 
+@ExperimentalPagerApi
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Report( vm: ReportsViewModel = viewModel()){
@@ -78,62 +82,17 @@ fun Report( vm: ReportsViewModel = viewModel()){
 
         },
         content = { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 16.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column {
-                        Text("12 Sep - 18 Sep", style = Typography.titleSmall)
-                        Row(modifier = Modifier.padding(top = 4.dp)) {
-                            Text(
-                                "USD",
-                                style = Typography.bodyMedium,
-                                color = LabelSecondary,
-                                modifier = Modifier.padding(end = 4.dp)
-                            )
-                            Text("85", style = Typography.headlineMedium)
-                        }
-                    }
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text("Avg/day", style = Typography.titleSmall)
-                        Row(modifier = Modifier.padding(top = 4.dp)) {
-                            Text(
-                                "USD",
-                                style = Typography.bodyMedium,
-                                color = LabelSecondary,
-                                modifier = Modifier.padding(end = 4.dp)
-                            )
-                            Text("85", style = Typography.headlineMedium)
-                        }
-                    }
-                }
 
-                Box(modifier = Modifier
-                    .height(180.dp)
-                    .padding(vertical = 16.dp)) {
-                    when (uiState.recurrence) {
-                        Recurrence.Weekly -> WeeklyChart(expenses = mockExpenses)
-                        Recurrence.Monthly -> MonthlyChart(expenses = mockExpenses, LocalDate.now())
-                        Recurrence.Yearly -> YearlyChart(expenses = mockExpenses)
-                        else -> Unit
-                    }
-                }
 
-                ExpensesList(
-                    expenses = mockExpenses, modifier = Modifier
-                        .weight(1f)
-                        .verticalScroll(
-                            rememberScrollState()
-                        )
-                )
+                val numOfPages = when (uiState.recurrence) {
+                    Recurrence.Weekly -> 53
+                    Recurrence.Monthly -> 12
+                    Recurrence.Yearly -> 1
+                    else -> 53
+                }
+                HorizontalPager(count = numOfPages, reverseLayout = true) { page ->
+                    ReportPage(innerPadding, page, uiState.recurrence)
+
             }
         }
     )

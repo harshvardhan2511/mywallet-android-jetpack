@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+// Data class: Hold data. Automatically generate utility methods: equals(), hashCode(), toString(), copy()
+
+
 data class ReportsState(
     val recurrence: Recurrence = Recurrence.Weekly,
     val recurrenceMenuOpened: Boolean = false
